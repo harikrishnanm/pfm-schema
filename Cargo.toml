@@ -1,0 +1,26 @@
+[package]
+name = "pfm-schema"
+version = "0.1.0"
+authors = ["Harikrishnan.M <harikrishnanm@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+actix = "0.10.0"
+actix-web = "3.3.2"
+actix-rt = "1.1.1"
+actix-web-validator = "2.0.1"
+actix-http = "2.2.0"
+env_logger = "0.8.2"
+log = "0.4.11"
+dotenv = "0.15.0"
+dotenv_codegen = "0.15.0"
+num_cpus = "1.13.0"
+aes-gcm = "0.8.0"
+uuid = { version = "0.8.1", features = ["serde", "v4"] }
+serde = "1.0.118"
+serde_json = "1.0.60"
+validator =  "0.12.0" 
+validator_derive =  "0.12.0"
+diesel = { version = "1.4.5", features = ["postgres", "r2d2"] }
+futures = "0.3"
+async-std = "1.8.0"
