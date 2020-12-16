@@ -20,6 +20,12 @@ pub struct JsonField {
 
 #[derive(Deserialize, Debug, Validate)]
 pub struct SchemaBody {
+    
+    #[validate(length(min = 4, message = "Should be atleast 4 characters"))]
+    #[validate(required)]
+    pub namespace: Option<String>,
+
+
     #[validate(length(min = 8, message = "Should be atleast 8 characters"))]
     #[validate(required)]
     #[serde(alias = "objectName")]
@@ -38,14 +44,16 @@ pub struct SchemaBody {
 pub struct ObjectSchema {
     pub id: i32,
     pub object_name: String,
-    pub object_url: String
+    pub object_url: String,
+    pub namespace: String
 }
 
 #[derive(Queryable, Insertable, Serialize, Deserialize, Debug)]
 #[table_name = "object_schema"]
 pub struct NewObjectSchema {
     pub object_name: String,
-    pub object_url: String
+    pub object_url: String,
+    pub namespace: String
 }
 
 async fn store_schema(new_schema: &NewObjectSchema, conn: &PooledConnection<ConnectionManager<PgConnection>>) -> Result<i32, Error> {
@@ -78,7 +86,10 @@ async fn process_fields(fields_option: &Option<Vec<JsonField>>, conn: &PooledCon
     info!("Storing object fields");
     match fields_option {
         Some(fields) =>{
-            debug!("Size of fields {}", fields.capacity());
+            debug!("Size of fields {}", fields.len());
+            for field in fields {
+                debug!("Processing field {:?}", field);
+            }
             
 
         }
@@ -98,9 +109,11 @@ pub async fn register_schema(schema_request: web::Json<SchemaBody>, request_cont
         None => {
             let name = &schema_request.object_name.as_ref();
             let url = &schema_request.object_url.as_ref();
+            let namespace = &schema_request.namespace.as_ref();
             let new_object_schema = NewObjectSchema {
                 object_name: name.unwrap().to_string(),
-                object_url: url.unwrap().to_string()
+                object_url: url.unwrap().to_string(),
+                namespace: namespace.unwrap().to_string()
             };
 
             let fields = &schema_request.fields;

@@ -38,13 +38,15 @@ fn handle_err(err: actix_web_validator::error::Error) -> actix_http::error::Erro
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
-
     env_logger::from_env(Env::default().default_filter_or("trace")).init();
 
     info!("########   Starting Platform Router (main)  #########");
 
     let addr = config::get_server_address();
     let workers = config::get_worker_count();
+
+    info!("Server Address: {}", &addr);
+    info!("Worker threads: {}", &workers);
 
     let pool = config::get_db().await.expect("Could not get connection pool");
 
